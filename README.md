@@ -12,6 +12,7 @@
 	JDBC:ojdbc6.jar(Oracle 11g)
 
 <h3>目录结构说明</h3>
+<div>
 ├─conf<br>
 │  └─hbm：*.hbm.xml<br>
 │  :spring配置文件<br>
@@ -35,6 +36,7 @@
     ├─META-INF<br>
     └─WEB-INF<br>
         └─lib<br>
+</div>
 <h3>说明</h3>
 	在struts中添加了一个默认的请求信息打印的拦截器:
 		INFO:URI[相应时间]::参数
