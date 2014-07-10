@@ -14,7 +14,7 @@
 	
 	<!-- 定义一个有日志打印的拦截器栈 -->
 	<interceptors>
-		<interceptor name="log" class="exam.struts.interceptor.LogInterceptor"></interceptor>
+		<interceptor name="log" class="core.struts.interceptor.LogInterceptor"></interceptor>
 		<interceptor-stack name="logstack">
 			<interceptor-ref name="log"></interceptor-ref>
 			<interceptor-ref name="defaultStack"></interceptor-ref>
@@ -23,7 +23,8 @@
 	<default-interceptor-ref name="logstack"></default-interceptor-ref>
 	
 	
-	<action name="configAction" class="configAction">
+	<action name="userAction" class="userAction">
+		<result name="input">/index.jsp</result>
 		<result name="success">/index.jsp</result>
 	</action>
 	

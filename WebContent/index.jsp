@@ -7,6 +7,11 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<s:a action="configAction.action">Action</s:a>
+	<s:debug></s:debug>
+	<s:form action="/userAction.action">
+		<s:textfield name="user.userid" label="userid"></s:textfield>
+		<s:textfield name="user.username" label="UserName"></s:textfield>
+		<s:submit value="Add"></s:submit>
+	</s:form>
 </body>
 </html>
