@@ -1,25 +1,20 @@
 package app.model;
 
 public class User {
-	private long  recordid;
 	
-	private String userid;
+	private Integer userid;
 	
 	private String username;
 
-	public long getRecordid() {
-		return recordid;
-	}
-
-	public void setRecordid(long recordid) {
-		this.recordid = recordid;
-	}
-
-	public String getUserid() {
+	private String email;
+	
+	private String password;
+	
+	public Integer getUserid() {
 		return userid;
 	}
 
-	public void setUserid(String userid) {
+	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
 
@@ -29,6 +24,22 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

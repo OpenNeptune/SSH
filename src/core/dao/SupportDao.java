@@ -22,7 +22,7 @@ public interface SupportDao<T> {
 	public List<T> getEntryListByHQL(String hql,Object ...objects);
 	
 	public List<T> getEntryListBySQL(String sql,Object ...objects);
-	
-	
+
+	public List<T> findEntityByHQL(String hql, Object[] objects);
 	
 }

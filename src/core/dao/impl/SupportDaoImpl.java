@@ -6,9 +6,12 @@ package core.dao.impl;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.annotation.Resource;
+
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hibernate.SessionFactory;
+import org.hibernate.classic.Session;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import core.dao.SupportDao;
@@ -16,7 +19,7 @@ import core.dao.SupportDao;
 
 public abstract class SupportDaoImpl<T>  implements SupportDao<T> {
 	
-	@Autowired
+	@Resource(name="hibernateTemplate")
 	private HibernateTemplate hibernateTemplate;
 	
 	public HibernateTemplate getHibernateTemplate() {
@@ -37,49 +40,49 @@ public abstract class SupportDaoImpl<T>  implements SupportDao<T> {
 	}
 	
 	public void saveEntry(T t) {
-		this.getHibernateTemplate().save(t);
+		hibernateTemplate.save(t);
 	}
 
 	public void updateEntry(T t) {
-		this.getHibernateTemplate().update(t);
+		hibernateTemplate.update(t);
 	}
 
 	public void saveOrUpdateEntry(T t) {
-		this.saveOrUpdateEntry(t);
+		hibernateTemplate.saveOrUpdate(t);
 	}
 
+	@SuppressWarnings("unchecked")
 	public int batchByHQL(String hql, Object... objects) {
-		Query query = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(hql);
-		for(int i = 0 ; i < objects.length ; i ++){
-			query.setParameter(i, objects[i]);
-		}
-		return query.executeUpdate();
+		 List<T> list = (List<T>) hibernateTemplate.find(hql,objects);
+		return list.size();
 	}
 
 	public void deleteEntryById(T t) {
-		this.deleteEntryById(t);
+		hibernateTemplate.delete(t);
 	}
 
 	public T loadEntry(String id) {
-		return this.getHibernateTemplate().load(clazz, id);
+		return hibernateTemplate.load(clazz, id);
 	}
 
 	public T getEntry(String id) {
-		return this.getHibernateTemplate().get(clazz, id);
+		return hibernateTemplate.get(clazz, id);
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<T> getEntryListByHQL(String hql,Object ...objects) {
-		
-		Query query = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(hql);
-		for(int i = 0 ; i < objects.length ; i ++){
-			query.setParameter(i, objects[i]);
-		}
-		return query.list();
+		List<T> list = (List<T>) hibernateTemplate.find(hql,objects);
+//		Query query = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(hql);
+//		for(int i = 0 ; i < objects.length ; i ++){
+//			query.setParameter(i, objects[i]);
+//		}
+//		return query.list();
+		return list;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<T> getEntryListBySQL(String sql,Object ...objects) {
+		//如果没有开启事务管理，在线程中不允许获取session
 		SQLQuery q =  this.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql);
 		//添加实体类
 		if(clazz != null){
@@ -91,4 +94,9 @@ public abstract class SupportDaoImpl<T>  implements SupportDao<T> {
 		return q.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> findEntityByHQL(String hql, Object[] objects) {
+		return (List<T>) hibernateTemplate.find(hql,objects);
+	}
 }

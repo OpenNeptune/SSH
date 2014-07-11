@@ -72,6 +72,8 @@ public abstract class SupportServiceImpl<T> implements SupportService<T> {
 			return supportDao.getEntryListBySQL(sql, objects);
 		}
 		
-		
+		public List<T> findEntityByHQL(String hql, Object... objects) {
+			return supportDao.findEntityByHQL(hql, objects);
+		}
 
 }
