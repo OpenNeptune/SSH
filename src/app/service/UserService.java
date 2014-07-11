@@ -8,5 +8,5 @@ import core.service.SupportService;
  * 		主要用于扩展
  */
 public interface UserService extends SupportService<User> {
-
+	
 }

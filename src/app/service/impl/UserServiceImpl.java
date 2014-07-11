@@ -18,6 +18,4 @@ public class UserServiceImpl extends SupportServiceImpl<User> implements UserSer
 		super.saveEntry(user);
 	}
 
-
-
 }

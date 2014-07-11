@@ -7,6 +7,4 @@
 
 	<context:component-scan base-package=
 		"app.service.impl,app.struts,app.dao.impl"/>
-	
-
 </beans>

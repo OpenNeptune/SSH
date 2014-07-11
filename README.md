@@ -40,3 +40,5 @@
 <h3>说明</h3>
 	在struts中添加了一个默认的请求信息打印的拦截器:
 		INFO:URI[相应时间]::参数
+
+	并且有一个JSP->STRUTS->SPRING->HIBERNATE->DB的具体实例

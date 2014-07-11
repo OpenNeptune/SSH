@@ -22,6 +22,10 @@ public abstract class SupportServiceImpl<T> implements SupportService<T> {
 			this.supportDao = supportDao;
 		}
 
+		public SupportDao getSupportDao(){
+			return this.supportDao;
+		}
+		
 		@Override
 		public void saveEntry(T t) {
 			supportDao.saveEntry(t);
