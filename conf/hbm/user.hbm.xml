@@ -5,7 +5,7 @@
 <hibernate-mapping>
 
 	<!-- 映射UserVO -->
-	<class name="app.model.User" table="hbm_tbl_user">
+	<class name="core.model.User" table="tbl_hbm_user">
 		<id name="userid">
 			<generator class="native"/>
 		</id>

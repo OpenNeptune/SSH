@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<s:a action="user_tregister.action">用户注册</s:a>
+	<s:a action="user_list.action">用户管理</s:a>
 </body>
 </html>

@@ -9,25 +9,42 @@
 	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
 	<constant name="struts.devMode" value="true" />
 	
-	
+
 	<package name="default"  extends="struts-default">
-	
-	<!-- 定义一个有日志打印的拦截器栈 -->
-	<interceptors>
-		<interceptor name="log" class="core.struts.interceptor.LogInterceptor"></interceptor>
-		<interceptor-stack name="logstack">
-			<interceptor-ref name="log"></interceptor-ref>
-			<interceptor-ref name="defaultStack"></interceptor-ref>
-		</interceptor-stack>
-	</interceptors>
-	<default-interceptor-ref name="logstack"></default-interceptor-ref>
-	
-	
-	<action name="user_*" class="userAction" method="exec_{1}">
-		<result name="register">/user/register.jsp</result>
-		<result name="input">/user/register.jsp</result>
-		<result name="success">/user/success.jsp</result>
-	</action>
+
+		<!-- 定义一个有日志打印的拦截器栈 -->
+		<interceptors>
+			<!-- 
+			<interceptor name="login" class="app.struts.interceptor.loginInterceptor"/>
+			-->
+			<interceptor name="log" class="core.struts.interceptor.LogInterceptor"></interceptor>
+			<interceptor-stack name="logstack">
+				<interceptor-ref name="log"></interceptor-ref>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+			
+			<!-- CURD拦截器栈 -->
+			<interceptor-stack name="curdStack">
+				<!--  
+				<interceptor-ref name="login"></interceptor-ref>
+				-->
+				<interceptor-ref name="log"></interceptor-ref>
+		        <interceptor-ref name="paramsPrepareParamsStack">
+		            <param name="prepare.alwaysInvokePrepare">true</param>
+		        </interceptor-ref>
+		    </interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="logstack"></default-interceptor-ref>
+		
+		<action name="user_*" class="userAction" method="exec_{1}">
+			<interceptor-ref name="curdStack"></interceptor-ref>
+			<result name="register">/user/register.jsp</result>
+			<result name="edit">/user/register.jsp</result>
+			<result name="input">/user/register.jsp</result>
+			<result name="list" >/user/userlist.jsp</result>
+			<result name="success"  type="redirectAction">user_list</result>
+		</action>
 	
 	</package>
 	

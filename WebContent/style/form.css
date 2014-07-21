@@ -1,0 +1,38 @@
+@CHARSET "UTF-8";
+*{
+	margin: 0px auto;
+	padding: 0px;	
+}
+body{
+	background-color: #d9dee2;
+}
+form.register{
+	position: absolute;
+	padding:30px;
+    top: 50%;
+    left: 50%;
+	margin-top:-250px;  
+   	margin-left:-150px;  
+    width:300px;  
+    heigth:200px; 
+    background-color: #fff;
+}
+.errormsg{
+	list-style-type:none;
+	text-align:right;
+	margin: 0px auto;
+	padding: 0px;
+	padding-right:12px;
+	font-size: 10px;
+}
+
+form div{
+	display: block;
+	margin: 3px;
+	padding: 3px;
+}
+form div div{
+	display:inline-block;
+	width: 100px;
+	height: 16px;
+}

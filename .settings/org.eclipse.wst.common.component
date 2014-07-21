@@ -5,7 +5,6 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/conf"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/JUnit"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/Test"/>
         <property name="context-root" value="SSH"/>
         <property name="java-output-path" value="/SSH/build/classes"/>
     </wb-module>

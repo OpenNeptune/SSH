@@ -1,12 +1,11 @@
-package app.dao.impl;
+package core.dao.impl;
 
 
 
 import org.springframework.stereotype.Repository;
 
-import app.dao.UserDao;
-import app.model.User;
-import core.dao.impl.SupportDaoImpl;
+import core.dao.UserDao;
+import core.model.User;
 
 @Repository("userDao")
 public class UserDaoImpl extends SupportDaoImpl<User> implements UserDao{

@@ -5,12 +5,13 @@
 <hibernate-mapping>
 
 	<!-- 映射UserVO -->
-	<class name="app.model.User" table="hbm_tbl_user">
-		<id name="recordid">
+	<class name="core.model.User" table="tbl_hbm_user">
+		<id name="userid">
 			<generator class="native"/>
 		</id>
-		<property name="userid" not-null="true"/>
 		<property name="username" not-null="true"/>
+		<property name="email" not-null="true"></property>
+		<property name="password" not-null="true"></property>
 	</class>
 
 

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="core.model.BusinessLog" table="TBL_HBM_OPERATION_LOG">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+           <generator class="native"/>
+        </id>
+        <property name="userName" type="java.lang.String">
+            <column name="USERNAME" />
+        </property>
+        <property name="address" type="java.lang.String">
+            <column name="ADDRESS" />
+        </property>
+        <property name="startTime" type="java.util.Date" not-null="true">
+            <column name="STARTTIME" />
+        </property>
+        <property name="uri" type="java.lang.String">
+            <column name="URI" length="1200" />
+        </property>
+        <property name="operationName" type="java.lang.String" length="100"  not-null="true">
+            <column name="OPERATIONNAME" />
+        </property>
+        <property name="operationParam" type="java.lang.String">
+            <column name="OPERATIONPARAM" />
+        </property>
+        <property name="result" type="java.lang.String">
+            <column name="RESULT"  length="100"/>
+        </property>
+        <property name="msg" type="java.lang.String">
+            <column name="MSG" length="2000" />
+        </property>
+    </class>
+</hibernate-mapping>

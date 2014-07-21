@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 import org.apache.log4j.Logger;
 
 import core.dao.SupportDao;
+import core.model.EntryPage;
 import core.service.SupportService;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -22,58 +23,55 @@ public abstract class SupportServiceImpl<T> implements SupportService<T> {
 			this.supportDao = supportDao;
 		}
 
-		public SupportDao getSupportDao(){
-			return this.supportDao;
-		}
-		
 		@Override
-		public void saveEntry(T t) {
+		public void save(T t) {
 			supportDao.saveEntry(t);
 		}
 
-
 		@Override
-		public void updateEntry(T t) {
+		public void update(T t) {
 			supportDao.updateEntry(t);
 		}
 
 		@Override
-		public void saveOrUpdateEntry(T t) {
+		public void saveOrUpdate(T t) {
 			supportDao.saveOrUpdateEntry(t);
 		}
 
 		@Override
 		public int batchByHQL(String hql, Object... objects) {
-			return supportDao.batchByHQL(hql, objects);
+			return supportDao.batchEntryByHQL(hql, objects);
 		}
 
 		@Override
-		public void deleteEntryById(T t) {
+		public void delete(T t) {
 			supportDao.deleteEntryById(t);
 		}
 
 		@Override
-		public T loadEntry(String id) {
+		public T load(Integer id) {
 			return (T) supportDao.loadEntry(id);
 		}
 
 		@Override
-		public T getEntry(String id) {
+		public T get(Integer id) {
 			return (T) supportDao.getEntry(id);
 		}
 
 		@Override
-		public List<T> getEntryListByHQL(String hql, Object... objects) {
+		public List<T> getListByHQL(String hql, Object... objects) {
 			return supportDao.getEntryListByHQL(hql, objects);
 		}
 
 		@Override
-		public List<T> getEntryListBySQL(String sql, Object... objects) {
+		public List<T> getListBySQL(String sql, Object... objects) {
 			return supportDao.getEntryListBySQL(sql, objects);
 		}
-		
-		public List<T> findEntityByHQL(String hql, Object... objects) {
-			return supportDao.findEntityByHQL(hql, objects);
+
+		@Override
+		public EntryPage query(String hql, int page, int size) {
+			return supportDao.queryEntry(hql, page, size);
 		}
+
 
 }

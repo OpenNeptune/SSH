@@ -1,11 +1,100 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
-	<!-- 数据源配置 -->
-	<import resource="springDatasource.xml"/>
+
+	<!-- 通过context指定外部引用的属性文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
 	
+	<!-- 配置spring注解的扫描目录 -->
+	<context:component-scan base-package="core.service.impl,core.struts,core.dao.impl"/>
+	
+	<!-- 配置Spring数据源-->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="user" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		
+		<property name="maxPoolSize" value="${c3p0.pool.size.max}" />
+		<property name="minPoolSize" value="${c3p0.pool.size.min}" />
+		<property name="initialPoolSize" value="${c3p0.pool.size.ini}" />
+		<property name="acquireIncrement" value="${c3p0.pool.size.increment}" />
+	</bean>
+	
+	
+	<!-- 定义Hibernate的SessionFactory -->
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        
+        <property name="hibernateProperties">
+             <props>
+                <!-- 指定Hibernate的连接方言 -->
+                <prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+                <!-- 配置启动应用时，是否根据Hibernate映射自动创建数据表 -->
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+           </props>
+        </property>
+        <!-- 全部映射文件 -->
+        <!-- 
+        	如果设置name属性mappingResources怎需要单独列出每个文件,
+        	如果设置name属性mappingLocations则可以使用通配符进行配置
+         -->
+        <property name="mappingLocations">
+        	<list>
+        		<value>classpath:hbm/*.hbm.xml</value>
+        	</list>
+        </property>
+    </bean>
+    
+	<!-- 配置hibernteTemplate -->
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+  		<property name="sessionFactory" ref="sessionFactory"></property>
+ 	</bean>
+ 	
+ 	<!-- 管理事务(JDBC局部事务管理策略) -->
+    <bean id="transactionManager"
+    	class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+    	<property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    
+   	<!--配置事务增强处理Bean,指定事务管理器-->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	<!--用于配置详细的事务寓意-->
+	<tx:attributes>
+			<!--所有以get开头的方法是read-only的-->
+			<tx:method name="get*" read-only="true"/>
+			<tx:method name="load*" read-only="true"/>
+			<tx:method name="find*" read-only="true"/>
+			<!--其方法方法使用默认的事务设置-->
+			<tx:method name="*" propagation="REQUIRED" isolation="DEFAULT"/>
+	</tx:attributes>
+	</tx:advice>
+	
+	<!-- aop配置 -->
+	<bean id="serviceAopLog" class="core.service.interceptor.ServiceIntercetor"/>
+	<aop:config>
+		<!-- 事务切入 -->
+		<aop:advisor advice-ref="txAdvice" pointcut="execution(* *..*ServiceImpl.*(..))" order="2"/>
+	
+		<!-- 日志切入 -->
+		<aop:aspect id="serviceAopLog" ref="serviceAopLog" order="1">
+			<aop:around 
+				pointcut="execution(* *..*ServiceImpl.*(..)) and !bean(businessLogService)" 
+				method="logAop" />
+		</aop:aspect>
+	</aop:config>
+
 	<!-- 应用程序核心Bean配置 -->
 	<import resource="ApplicationContext-core-beans.xml"/>
 

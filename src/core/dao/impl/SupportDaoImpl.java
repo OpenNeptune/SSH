@@ -1,89 +1,91 @@
 package core.dao.impl;
-/******************************************************************
- * @summary:
- * 		用于完成DAO操作的抽象基类，主要用于继承
- ******************************************************************/
 import java.lang.reflect.ParameterizedType;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
-import org.hibernate.SessionFactory;
-import org.hibernate.classic.Session;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import core.dao.SupportDao;
+import core.model.EntryPage;
+/******************************************************************
+ * @summary:
+ * 		用于完成DAO操作的抽象基类，主要用于继承
+ ******************************************************************/
 
-
-public abstract class SupportDaoImpl<T>  implements SupportDao<T> {
+public abstract class SupportDaoImpl<T> implements   SupportDao<T> {
 	
 	@Resource(name="hibernateTemplate")
-	private HibernateTemplate hibernateTemplate;
+	@Getter @Setter private HibernateTemplate hibernateTemplate;
 	
-	public HibernateTemplate getHibernateTemplate() {
-		return hibernateTemplate;
-	}
-
-	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
-		this.hibernateTemplate = hibernateTemplate;
-	}
-
 	//构造时初始（获取泛型）
-	private Class<T> clazz;
+	@Getter @Setter private Class<T> clazz;
 	
 	@SuppressWarnings("unchecked")
 	public SupportDaoImpl(){
 		ParameterizedType type = (ParameterizedType) this.getClass().getGenericSuperclass();
 		clazz = (Class<T>) type.getActualTypeArguments()[0];
 	}
-	
+
+	@Override
 	public void saveEntry(T t) {
-		hibernateTemplate.save(t);
+		this.hibernateTemplate.save(t);
 	}
 
+	@Override
 	public void updateEntry(T t) {
-		hibernateTemplate.update(t);
+		this.hibernateTemplate.update(t);
 	}
 
+	@Override
 	public void saveOrUpdateEntry(T t) {
-		hibernateTemplate.saveOrUpdate(t);
+		this.hibernateTemplate.saveOrUpdate(t);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public int batchByHQL(String hql, Object... objects) {
-		 List<T> list = (List<T>) hibernateTemplate.find(hql,objects);
+	public int batchEntryByHQL(String hql, Object... objects) {
+		List<T> list = (List<T>) hibernateTemplate.find(hql,objects);
 		return list.size();
 	}
 
+	@Override
 	public void deleteEntryById(T t) {
 		hibernateTemplate.delete(t);
 	}
 
-	public T loadEntry(String id) {
+	@Override
+	public T loadEntry(Integer id) {
 		return hibernateTemplate.load(clazz, id);
 	}
 
-	public T getEntry(String id) {
+	@Override
+	public T getEntry(Integer id) {
 		return hibernateTemplate.get(clazz, id);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> getEntryListByHQL(String hql,Object ...objects) {
+	public List<T> getEntryListByHQL(String hql, Object... objects) {
 		List<T> list = (List<T>) hibernateTemplate.find(hql,objects);
-//		Query query = this.getHibernateTemplate().getSessionFactory().getCurrentSession().createQuery(hql);
-//		for(int i = 0 ; i < objects.length ; i ++){
-//			query.setParameter(i, objects[i]);
-//		}
-//		return query.list();
 		return list;
 	}
 
+	
+	@Override
 	@SuppressWarnings("unchecked")
-	public List<T> getEntryListBySQL(String sql,Object ...objects) {
+	public List<T> getEntryListBySQL(String sql, Object... objects) {
 		//如果没有开启事务管理，在线程中不允许获取session
-		SQLQuery q =  this.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql);
+		SQLQuery q =  hibernateTemplate.getSessionFactory().getCurrentSession().createSQLQuery(sql);
 		//添加实体类
 		if(clazz != null){
 			q.addEntity(clazz);
@@ -94,9 +96,38 @@ public abstract class SupportDaoImpl<T>  implements SupportDao<T> {
 		return q.list();
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<T> findEntityByHQL(String hql, Object[] objects) {
 		return (List<T>) hibernateTemplate.find(hql,objects);
 	}
+
+	/**
+	 * page默认值为1. 从第一页开始
+	 * size默认值为100,每页100条记录
+	 */
+	@Override
+	@SuppressWarnings({ "unchecked", "deprecation","rawtypes" })
+	public EntryPage queryEntry(final String hql, int page, final int size) {
+		final EntryPage pageInfo = new EntryPage();
+		pageInfo.setPageSize(size);
+		pageInfo.setCurrentPage(page);
+		pageInfo.setAllRow(hibernateTemplate.find(hql).size());
+		pageInfo.init();
+		List<Object> list = (List<Object>) hibernateTemplate.executeFind(new HibernateCallback(){
+	            public Object doInHibernate(Session session) throws HibernateException,SQLException{
+	                Query query = session.createQuery(hql);
+	                query.setFirstResult(pageInfo.getOffset());
+	                query.setMaxResults(size);
+					List list = query.list();
+	                return list;
+	            }
+	    });
+		pageInfo.setList(list);
+		pageInfo.init();
+		return pageInfo;
+	}
+	
+
 }

@@ -2,23 +2,27 @@ package core.service;
 
 import java.util.List;
 
+import core.model.EntryPage;
+
 public interface SupportService<T> {
 	//业务层的操作
-	public void saveEntry(T t);
+	public void save(T t);
 	
-	public void updateEntry(T t);
+	public void update(T t);
 	
-	public void saveOrUpdateEntry(T t);
+	public void saveOrUpdate(T t);
 	
-	public int batchByHQL(String hql,Object ...objects);
+	public int 	batchByHQL(String hql,Object ...objects);
 	
-	public void deleteEntryById(T t);
+	public void delete(T t);
 	
-	public T loadEntry(String id);
+	public T load(Integer id);
 	
-	public T getEntry(String id);
+	public T get(Integer id);
 	
-	public List<T> getEntryListByHQL(String hql,Object ...objects);
+	public List<T> getListByHQL(String hql,Object ...objects);
 	
-	public List<T> getEntryListBySQL(String sql,Object ...objects);
+	public List<T> getListBySQL(String sql,Object ...objects);
+	
+	public EntryPage query(final String hql, int page, final int size);
 }
